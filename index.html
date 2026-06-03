@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HesapVakti — Tüm Hesaplamalar Bir Arada</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --white: #ffffff;
+    --text: #111010;
+    --muted: #7a7570;
+    --border: #e2ddd8;
+    --hero-bg: #0d0d0b;
+    --gold: #b8962e;
+    --gold-light: #d4aa4a;
+    --gold-pale: #faf6ec;
+    --gold-border: #e8d88a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--hero-bg);
+    padding: 1.1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.5px;
+  }
+
+  .logo span { color: #fff; }
+
+  .header-badge {
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--hero-bg);
+    padding: 3rem 1.5rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-title em {
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    color: #6b6560;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  .search-wrap {
+    position: relative;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 0.9rem 1.2rem 0.9rem 3rem;
+    background: #1a1916;
+    border: 1px solid #2e2c28;
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    color: #e0dbd0;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input::placeholder { color: #4a4740; }
+  .search-wrap input:focus { border-color: var(--gold); }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4a4740;
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  /* STATS */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat {
+    flex: 1;
+    text-align: center;
+    padding: 1rem 0.5rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.2rem;
+  }
+
+  /* CATS */
+  .cats {
+    display: flex;
+    gap: 0.4rem;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cats::-webkit-scrollbar { display: none; }
+
+  .cat-btn {
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .cat-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .cat-btn.active { background: var(--hero-bg); color: var(--gold-light); border-color: var(--hero-bg); }
+
+  /* GRID */
+  .grid-wrap { padding: 1.5rem 1.2rem; }
+
+  .section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .tool-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 1.3rem 1.1rem 1.1rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.18s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tool-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(184,150,46,0.1);
+    transform: translateY(-2px);
+  }
+
+  .tool-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .tool-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .tool-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.4;
+    font-weight: 300;
+  }
+
+  /* MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-bg.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 18px 18px 0 0;
+    padding: 1.5rem 1.5rem 3rem;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(.22,1,.36,1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 36px; height: 3px;
+    background: var(--border);
+    border-radius: 999px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .modal-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .form-group { margin-bottom: 1rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--gold);
+    background: var(--white);
+  }
+
+  .calc-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--hero-bg);
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    letter-spacing: 0.5px;
+    transition: all 0.18s;
+  }
+
+  .calc-btn:hover { background: #1a1916; }
+  .calc-btn:active { transform: scale(0.99); }
+
+  .result-box {
+    margin-top: 1.5rem;
+    background: var(--hero-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .result-box.show { display: block; }
+
+  .result-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.4rem;
+  }
+
+  .result-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .result-detail {
+    font-size: 0.8rem;
+    color: #6b6560;
+    margin-top: 1rem;
+    line-height: 1.8;
+    font-weight: 300;
+    border-top: 1px solid #2e2c28;
+    padding-top: 0.75rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  footer {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (min-width: 600px) {
+    .modal-bg { align-items: center; padding: 1rem; }
+    .modal { border-radius: 18px; max-height: 85vh; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); }
+    .hero-title { font-size: 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Hesap<span>Vakti</span></div>
+  <div class="header-badge">16 Araç</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Türkiye'nin Hesap Platformu</div>
+  <h1 class="hero-title">Her hesap için<br><em>doğru araç</em></h1>
+  <p class="hero-sub">Finans · Vergi · Sağlık · Araç — Hepsi ücretsiz</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Araç ara... kredi, kalori, yakıt..." oninput="filterTools()">
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">16</div><div class="stat-label">Araç</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Kategori</div></div>
+  <div class="stat"><div class="stat-num">%100</div><div class="stat-label">Ücretsiz</div></div>
+  <div class="stat"><div class="stat-num">0</div><div class="stat-label">Kayıt</div></div>
+</div>
+
+<div class="cats">
+  <button class="cat-btn active" onclick="filterCat('hepsi',this)">Hepsi</button>
+  <button class="cat-btn" onclick="filterCat('finans',this)">💰 Finans</button>
+  <button class="cat-btn" onclick="filterCat('vergi',this)">🧾 Vergi</button>
+  <button class="cat-btn" onclick="filterCat('saglik',this)">❤️ Sağlık</button>
+  <button class="cat-btn" onclick="filterCat('arac',this)">🚗 Araç</button>
+  <button class="cat-btn" onclick="filterCat('diger',this)">📐 Diğer</button>
+</div>
+
+<div class="grid-wrap">
+  <div class="section-label" id="sectionLabel">Tüm Araçlar</div>
+  <div class="grid" id="toolGrid"></div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-eyebrow" id="modalEyebrow"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div id="modalContent"></div>
+    <div class="result-box" id="resultBox">
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-value" id="resultValue"></div>
+      <div class="result-detail" id="resultDetail"></div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2024 HesapVakti — Tüm hesaplamalar bilgilendirme amaçlıdır.</footer>
+
+<script>
+const catNames2 = { finans:'Finans', vergi:'Vergi', saglik:'Sağlık', arac:'Araç', diger:'Diğer' };
+
+const tools = [
+  { id:'kredi', cat:'finans', icon:'🏦', name:'Kredi Hesaplama', desc:'Aylık taksit ve toplam ödeme',
+    fields:[{id:'kAna',label:'Kredi Tutarı (₺)',type:'number',placeholder:'100000'},{id:'kFaiz',label:'Yıllık Faiz (%)',type:'number',placeholder:'45'},{id:'kVade',label:'Vade (Ay)',type:'number',placeholder:'24'}],
+    calc:(f)=>{ const a=+f.kAna,r=+f.kFaiz/100/12,n=+f.kVade; const t=a*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1); return {value:fmt(t)+' ₺',label:'Aylık Taksit',detail:`Toplam Geri Ödeme: ${fmt(t*n)} ₺\nToplam Faiz: ${fmt(t*n-a)} ₺`}; }
+  },
+  { id:'mevduat', cat:'finans', icon:'💵', name:'Mevduat Faizi', desc:'Vadeli mevduat getirisi',
+    fields:[{id:'mAna',label:'Anapara (₺)',type:'number',placeholder:'50000'},{id:'mFaiz',label:'Yıllık Faiz (%)',type:'number',placeholder:'55'},{id:'mGun',label:'Vade (Gün)',type:'number',placeholder:'32'}],
+    calc:(f)=>{ const a=+f.mAna,r=+f.mFaiz,g=+f.mGun; const brut=a*(r/100)*(g/365); const net=brut*0.85; return {value:fmt(net)+' ₺',label:'Net Faiz Geliri',detail:`Brüt Faiz: ${fmt(brut)} ₺\nStopaj (%15): ${fmt(brut*0.15)} ₺\nVade Sonu: ${fmt(a+net)} ₺`}; }
+  },
+  { id:'altin', cat:'finans', icon:'🥇', name:'Altın Kâr / Zarar', desc:'Altın alım satım getirisi',
+    fields:[{id:'aMiktar',label:'Gram',type:'number',placeholder:'10'},{id:'aAlis',label:'Alış Fiyatı (₺/gr)',type:'number',placeholder:'2800'},{id:'aSatis',label:'Satış Fiyatı (₺/gr)',type:'number',placeholder:'3100'}],
+    calc:(f)=>{ const m=+f.aMiktar,a=+f.aAlis,s=+f.aSatis; const k=(s-a)*m; return {value:(k>=0?'+':'')+fmt(k)+' ₺',label:k>=0?'Kâr':'Zarar',detail:`Alış Maliyeti: ${fmt(a*m)} ₺\nSatış Geliri: ${fmt(s*m)} ₺\nGetiri: %${(((s-a)/a)*100).toFixed(2)}`}; }
+  },
+  { id:'doviz', cat:'finans', icon:'💱', name:'Döviz Çevirici', desc:'Canlı kur ile TL, Dolar, Euro dönüşümü', special:'doviz' },
+  { id:'kira', cat:'finans', icon:'🏠', name:'Kira Artış', desc:'TÜFE oranına göre yeni kira',
+    fields:[{id:'kiraMevcut',label:'Mevcut Kira (₺)',type:'number',placeholder:'5000'},{id:'kiraTufe',label:'TÜFE Oranı (%)',type:'number',placeholder:'48.5'}],
+    calc:(f)=>{ const k=+f.kiraMevcut,t=+f.kiraTufe; const y=k*(1+t/100); return {value:fmt(y)+' ₺',label:'Yeni Kira Bedeli',detail:`Artış Miktarı: ${fmt(y-k)} ₺\nArtış Oranı: %${t}`}; }
+  },
+  { id:'emekli', cat:'finans', icon:'👴', name:'Emekli Maaşı', desc:'Prim günü bazlı tahmini maaş',
+    fields:[{id:'ePrim',label:'Prim Gün Sayısı',type:'number',placeholder:'7200'},{id:'eOrtalama',label:'Ort. Aylık Kazanç (₺)',type:'number',placeholder:'25000'}],
+    calc:(f)=>{ const p=+f.ePrim,k=+f.eOrtalama; const m=k*(p/7200)*0.6; return {value:fmt(m)+' ₺',label:'Tahmini Emekli Maaşı',detail:`Prim Gün: ${p}\nOrt. Kazanç: ${fmt(k)} ₺\n⚠️ Basitleştirilmiş tahmin`}; }
+  },
+  { id:'asgari', cat:'finans', icon:'💼', name:'Asgari Ücret', desc:'Net maaş hesaplaması',
+    fields:[{id:'aGun',label:'Çalışılan Gün',type:'number',placeholder:'30'}],
+    calc:(f)=>{ const g=+f.aGun; const net=20002.50*0.85*(g/30); return {value:fmt(net)+' ₺',label:'Net Maaş (Tahmini)',detail:`Brüt Asgari: 20.002,50 ₺\nÇalışılan Gün: ${g}/30\n(2024 baz alınmıştır)`}; }
+  },
+  { id:'bilesik', cat:'finans', icon:'📈', name:'Bileşik Faiz', desc:'Yatırımın yıllar içinde büyümesi',
+    fields:[{id:'bfAna',label:'Anapara (₺)',type:'number',placeholder:'10000'},{id:'bfFaiz',label:'Yıllık Faiz (%)',type:'number',placeholder:'40'},{id:'bfYil',label:'Süre (Yıl)',type:'number',placeholder:'5'}],
+    calc:(f)=>{ const a=+f.bfAna,r=+f.bfFaiz,y=+f.bfYil; const s=a*Math.pow(1+r/100,y); return {value:fmt(s)+' ₺',label:`${y} Yıl Sonraki Değer`,detail:`Başlangıç: ${fmt(a)} ₺\nKazanç: ${fmt(s-a)} ₺\nGetiri: %${(((s-a)/a)*100).toFixed(1)}`}; }
+  },
+  { id:'kdv', cat:'vergi', icon:'🧾', name:'KDV Hesaplama', desc:'KDV ekle veya ayır',
+    fields:[{id:'kdvFiyat',label:'Fiyat (₺)',type:'number',placeholder:'1000'},{id:'kdvOran',label:'KDV Oranı',type:'select',options:['1','10','20']},{id:'kdvIslem',label:'İşlem',type:'select',options:['KDV Ekle (Hariç→Dahil)','KDV Çıkar (Dahil→Hariç)']}],
+    calc:(f)=>{ const p=+f.kdvFiyat,r=+f.kdvOran; const ekle=f.kdvIslem.startsWith('KDV Ekle'); let kdv,son; if(ekle){kdv=p*(r/100);son=p+kdv;}else{kdv=p-(p/(1+r/100));son=p-kdv;} return {value:fmt(son)+' ₺',label:ekle?'KDV Dahil Fiyat':'KDV Hariç Fiyat',detail:`KDV Tutarı: ${fmt(kdv)} ₺\nKDV Oranı: %${r}`}; }
+  },
+  { id:'gelirVergisi', cat:'vergi', icon:'📋', name:'Gelir Vergisi', desc:'Yıllık gelire göre vergi dilimi',
+    fields:[{id:'gvGelir',label:'Yıllık Gelir (₺)',type:'number',placeholder:'300000'}],
+    calc:(f)=>{ const g=+f.gvGelir; let v=0; if(g<=110000)v=g*0.15; else if(g<=230000)v=16500+(g-110000)*0.20; else if(g<=580000)v=40500+(g-230000)*0.27; else if(g<=3000000)v=135000+(g-580000)*0.35; else v=982000+(g-3000000)*0.40; return {value:fmt(v)+' ₺',label:'Yıllık Gelir Vergisi',detail:`Net Gelir: ${fmt(g-v)} ₺\nEff. Oran: %${((v/g)*100).toFixed(1)}`}; }
+  },
+  { id:'maasNet', cat:'vergi', icon:'💳', name:'Brüt / Net Maaş', desc:'Maaş kesinti hesaplaması',
+    fields:[{id:'mnMaas',label:'Maaş (₺)',type:'number',placeholder:'30000'},{id:'mnTip',label:'Tip',type:'select',options:['Brütten Nete','Netten Brüte']}],
+    calc:(f)=>{ const m=+f.mnMaas,bn=f.mnTip==='Brütten Nete'; let b,n,sgk,gv,damga; if(bn){b=m;sgk=b*0.14;gv=(b-sgk)*0.15;damga=b*0.00759;n=b-sgk-gv-damga;}else{n=m;b=n/0.72;sgk=b*0.14;gv=(b-sgk)*0.15;damga=b*0.00759;} return {value:fmt(bn?n:b)+' ₺',label:bn?'Net Maaş':'Brüt Maaş',detail:`SGK: ${fmt(sgk)} ₺\nGelir Vergisi: ${fmt(gv)} ₺\nDamga: ${fmt(damga)} ₺`}; }
+  },
+  { id:'stopaj', cat:'vergi', icon:'🏛️', name:'Stopaj Vergisi', desc:'Kira ve mevduat stopajı',
+    fields:[{id:'stGelir',label:'Gelir (₺)',type:'number',placeholder:'5000'},{id:'stTip',label:'Gelir Tipi',type:'select',options:['Kira Geliri (%20)','Mevduat (%15)','Serbest Meslek (%17)']}],
+    calc:(f)=>{ const g=+f.stGelir; const oranMap={'Kira Geliri (%20)':20,'Mevduat (%15)':15,'Serbest Meslek (%17)':17}; const r=oranMap[f.stTip]; const s=g*(r/100); return {value:fmt(s)+' ₺',label:'Stopaj Vergisi',detail:`Net Gelir: ${fmt(g-s)} ₺\nOran: %${r}`}; }
+  },
+  { id:'vki', cat:'saglik', icon:'⚖️', name:'Vücut Kitle İndeksi', desc:'Boy ve kilo bazlı VKİ',
+    fields:[{id:'vkiKilo',label:'Kilo (kg)',type:'number',placeholder:'70'},{id:'vkiBoy',label:'Boy (cm)',type:'number',placeholder:'170'}],
+    calc:(f)=>{ const k=+f.vkiKilo,b=+f.vkiBoy/100; const v=k/(b*b); let d=v<18.5?'Zayıf':v<25?'Normal':v<30?'Fazla Kilolu':'Obez'; return {value:v.toFixed(1),label:'VKİ Değeri',detail:`Durum: ${d}\nİdeal Ağırlık: ${(22*b*b).toFixed(1)} – ${(24.9*b*b).toFixed(1)} kg`}; }
+  },
+  { id:'kalori', cat:'saglik', icon:'🥗', name:'Günlük Kalori', desc:'Günlük enerji ihtiyacı',
+    fields:[{id:'kYas',label:'Yaş',type:'number',placeholder:'30'},{id:'kKilo',label:'Kilo (kg)',type:'number',placeholder:'70'},{id:'kBoy',label:'Boy (cm)',type:'number',placeholder:'170'},{id:'kCinsiyet',label:'Cinsiyet',type:'select',options:['Erkek','Kadın']},{id:'kAkt',label:'Aktivite',type:'select',options:['Hareketsiz','Az Aktif','Orta Aktif','Çok Aktif']}],
+    calc:(f)=>{ const y=+f.kYas,k=+f.kKilo,b=+f.kBoy; let bmr=f.kCinsiyet==='Erkek'?10*k+6.25*b-5*y+5:10*k+6.25*b-5*y-161; const c={'Hareketsiz':1.2,'Az Aktif':1.375,'Orta Aktif':1.55,'Çok Aktif':1.725}; const t=bmr*c[f.kAkt]; return {value:Math.round(t)+' kcal',label:'Günlük Kalori',detail:`BMR: ${Math.round(bmr)} kcal\nKilo vermek: ${Math.round(t-500)} kcal\nKilo almak: ${Math.round(t+500)} kcal`}; }
+  },
+  { id:'yakit', cat:'arac', icon:'⛽', name:'Yakıt Maliyeti', desc:'Yolculuk yakıt gideri',
+    fields:[{id:'yMesafe',label:'Mesafe (km)',type:'number',placeholder:'500'},{id:'yTuketim',label:'Tüketim (L/100km)',type:'number',placeholder:'7'},{id:'yFiyat',label:'Yakıt Fiyatı (₺/L)',type:'number',placeholder:'45'}],
+    calc:(f)=>{ const m=+f.yMesafe,t=+f.yTuketim,p=+f.yFiyat; const l=m*t/100; return {value:fmt(l*p)+' ₺',label:'Yakıt Maliyeti',detail:`Kullanılan: ${l.toFixed(2)} L\nMesafe: ${m} km`}; }
+  },
+  { id:'bankaFaiz', cat:'finans', icon:'🏛️', name:'Banka Faiz Karşılaştırma', desc:'Hangi bankada daha çok kazanırsın?', special:'bankaFaiz', fields:[], calc:()=>({}) },
+  { id:'yas', cat:'diger', icon:'🎂', name:'Yaş Hesaplama', desc:'Tam yaş ve gün sayısı',
+    fields:[{id:'yasDogu',label:'Doğum Tarihi',type:'date'}],
+    calc:(f)=>{ const d=new Date(f.yasDogu),b=new Date(); const ms=b-d; const y=Math.floor(ms/(365.25*24*3600*1000)); const g=Math.floor(ms/(24*3600*1000)); return {value:y+' Yaş',label:'Yaşınız',detail:`Toplam Yaşanan Gün: ${g.toLocaleString('tr-TR')}`}; }
+  }
+];
+
+function fmt(n){ return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function renderGrid(list){
+  const grid=document.getElementById('toolGrid');
+  if(!list.length){ grid.innerHTML='<div class="no-results">Araç bulunamadı.</div>'; return; }
+  grid.innerHTML=list.map(t=>`
+    <div class="tool-card" onclick="openTool('${t.id}')">
+      <div class="tool-icon">${t.icon}</div>
+      <div class="tool-name">${t.name}</div>
+      <div class="tool-desc">${t.desc}</div>
+    </div>`).join('');
+}
+
+function filterCat(cat,btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('searchInput').value='';
+  const labels={'hepsi':'Tüm Araçlar','finans':'Finans Araçları','vergi':'Vergi Araçları','saglik':'Sağlık Araçları','arac':'Araç Hesaplamaları','diger':'Diğer Araçlar'};
+  document.getElementById('sectionLabel').textContent=labels[cat];
+  renderGrid(cat==='hepsi'?tools:tools.filter(t=>t.cat===cat));
+}
+
+function filterTools(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  renderGrid(tools.filter(t=>t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)));
+}
+
+// Banka verileri - elle güncelle
+const bankalar = [
+  { ad:'Ziraat Bankası', logo:'🟢', vade32:54.0, vade91:56.0, vade182:57.0 },
+  { ad:'İş Bankası',     logo:'🔵', vade32:52.0, vade91:54.5, vade182:55.5 },
+  { ad:'Garanti BBVA',  logo:'🟡', vade32:51.5, vade91:53.0, vade182:54.0 },
+  { ad:'Yapı Kredi',    logo:'🟠', vade32:52.5, vade91:54.0, vade182:55.0 },
+  { ad:'Akbank',        logo:'🔴', vade32:51.0, vade91:53.5, vade182:54.5 },
+  { ad:'Halkbank',      logo:'🟣', vade32:53.0, vade91:55.0, vade182:56.5 },
+  { ad:'VakıfBank',     logo:'⚫', vade32:53.5, vade91:55.5, vade182:57.0 },
+  { ad:'Denizbank',     logo:'🔷', vade32:50.0, vade91:52.0, vade182:53.0 },
+];
+
+function renderBankaKarsilastirma(miktar, vadeKey){
+  const sonuclar = bankalar.map(b=>({...b, kazanc: miktar*(b[vadeKey]/100)*(vadeKey==='vade32'?32:vadeKey==='vade91'?91:182)/365*0.85}));
+  sonuclar.sort((a,b)=>b.kazanc-a.kazanc);
+  const en = sonuclar[0];
+  let html = `<div style="margin-top:1rem">
+    <div style="font-size:0.7rem;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem">EN İYİ: ${en.logo} ${en.ad} — ${fmt(en.kazanc)} ₺ net</div>`;
+  sonuclar.forEach((b,i)=>{
+    const bar = Math.round((b.kazanc/en.kazanc)*100);
+    html += `<div style="margin-bottom:0.75rem">
+      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.25rem">
+        <span style="font-weight:600;color:${i===0?'var(--gold-light)':'#aaa'}">${b.logo} ${b.ad}</span>
+        <span style="color:${i===0?'var(--gold-light)':'#888'}">%${b[vadeKey].toFixed(1)} → ${fmt(b.kazanc)} ₺</span>
+      </div>
+      <div style="background:#2a2820;border-radius:4px;height:6px">
+        <div style="background:${i===0?'var(--gold)':'#3a3830'};width:${bar}%;height:100%;border-radius:4px;transition:width 0.4s"></div>
+      </div>
+    </div>`;
+  });
+  html += `<div style="font-size:0.68rem;color:#555;margin-top:1rem">Son güncelleme: Ocak 2024 · Oranlar değişkenlik gösterebilir</div></div>`;
+  return html;
+}
+
+function openTool(id){
+  const tool=tools.find(t=>t.id===id);
+  if(!tool)return;
+  document.getElementById('modalEyebrow').textContent=catNames2[tool.cat]||'';
+  document.getElementById('modalTitle').textContent=tool.icon+' '+tool.name;
+  document.getElementById('resultBox').classList.remove('show');
+
+  if(id==='altin'){
+    document.getElementById('modalEyebrow').textContent='Finans';
+    document.getElementById('modalTitle').textContent='🥇 Altın Kâr / Zarar';
+    document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('modalContent').innerHTML=`
+      <div class="form-group"><label>Gram</label><input type="number" id="f_aMiktar" placeholder="10"></div>
+      <div class="form-group">
+        <label>Alış Fiyatı (₺/gr) <span id="goldLoadingAllis" style="color:var(--gold);font-size:0.7rem"></span></label>
+        <input type="number" id="f_aAlis" placeholder="Yükleniyor...">
+      </div>
+      <div class="form-group">
+        <label>Satış / Güncel Fiyat (₺/gr) <span id="goldLoadingSatis" style="color:var(--gold);font-size:0.7rem">⟳ Yükleniyor...</span></label>
+        <input type="number" id="f_aSatis" placeholder="Yükleniyor...">
+      </div>
+      <button class="calc-btn" onclick="calculate('altin')">Hesapla</button>`;
+    document.getElementById('modalBg').classList.add('open');
+    // Fetch live gold price
+    fetch('https://api.gold-api.com/price/XAU')
+      .then(r=>r.json())
+      .then(data=>{
+        // Gold API returns price in USD per troy oz, convert to TRY per gram
+        // 1 troy oz = 31.1035 grams
+        // We'll use a fallback USD/TRY rate if needed
+        return fetch('https://api.exchangerate-api.com/v4/latest/USD')
+          .then(r2=>r2.json())
+          .then(fx=>{
+            const usdTry = fx.rates.TRY;
+            const gramprice = Math.round((data.price / 31.1035) * usdTry);
+            document.getElementById('f_aSatis').value = gramprice;
+            document.getElementById('goldLoadingSatis').textContent = '✓ Canlı fiyat';
+          });
+      })
+      .catch(()=>{
+        document.getElementById('goldLoadingSatis').textContent = '⚠️ Manuel girin';
+        document.getElementById('f_aSatis').placeholder = 'Fiyat girin';
+      });
+    return;
+  }
+
+  if(tool.special==='doviz'){
+    document.getElementById('modalEyebrow').textContent='Finans';
+    document.getElementById('modalTitle').textContent='💱 Döviz Çevirici';
+    document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('modalContent').innerHTML=`
+      <div class="form-group"><label>Miktar</label><input type="number" id="f_dovizMiktar" placeholder="1000"></div>
+      <div class="form-group"><label>Kaynak</label><select id="f_dovizKaynak">
+        <option value="TRY">TRY — Türk Lirası</option>
+        <option value="USD">USD — Amerikan Doları</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="GBP">GBP — Sterlin</option>
+      </select></div>
+      <div class="form-group"><label>Hedef</label><select id="f_dovizHedef">
+        <option value="USD">USD — Amerikan Doları</option>
+        <option value="TRY">TRY — Türk Lirası</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="GBP">GBP — Sterlin</option>
+      </select></div>
+      <div id="kurStatus" style="font-size:0.75rem;color:var(--gold);margin-bottom:1rem">⟳ Canlı kur yükleniyor...</div>
+      <button class="calc-btn" onclick="hesaplaDoviz()">Çevir →</button>
+      <div id="dovizResult"></div>`;
+    document.getElementById('modalBg').classList.add('open');
+    fetch('https://api.exchangerate-api.com/v4/latest/USD')
+      .then(r=>r.json())
+      .then(data=>{
+        window._dovizRates=data.rates;
+        const el=document.getElementById('kurStatus');
+        if(el){el.textContent='✓ Canlı kur yüklendi';el.style.color='#5dbb8a';}
+      })
+      .catch(()=>{
+        const el=document.getElementById('kurStatus');
+        if(el){el.textContent='⚠️ Kur yüklenemedi';el.style.color='#e08040';}
+      });
+    return;
+  }
+
+    if(tool.special==='bankaFaiz'){
+    document.getElementById('modalContent').innerHTML=`
+      <div class="form-group"><label>Yatırım Miktarı (₺)</label><input type="number" id="f_bfMiktar" placeholder="50000"></div>
+      <div class="form-group"><label>Vade</label><select id="f_bfVade">
+        <option value="vade32">32 Gün</option>
+        <option value="vade91">91 Gün</option>
+        <option value="vade182">182 Gün</option>
+      </select></div>
+      <button class="calc-btn" onclick="hesaplaBanka()">Karşılaştır</button>
+      <div id="bankaResult"></div>`;
+    document.getElementById('modalBg').classList.add('open');
+    return;
+  }
+
+  document.getElementById('modalContent').innerHTML=tool.fields.map(field=>{
+    if(field.type==='select') return `<div class="form-group"><label>${field.label}</label><select id="f_${field.id}">${field.options.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+    if(field.type==='date') return `<div class="form-group"><label>${field.label}</label><input type="date" id="f_${field.id}" value="1990-01-01"></div>`;
+    return `<div class="form-group"><label>${field.label}</label><input type="number" id="f_${field.id}" placeholder="${field.placeholder||''}"></div>`;
+  }).join('')+`<button class="calc-btn" onclick="calculate('${id}')">Hesapla</button>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function hesaplaDoviz(){
+  const miktar = +document.getElementById('f_dovizMiktar').value;
+  const kaynak = document.getElementById('f_dovizKaynak').value;
+  const hedef = document.getElementById('f_dovizHedef').value;
+  if(!miktar){ document.getElementById('dovizResult').innerHTML='<p style="color:var(--muted);margin-top:1rem">Lütfen miktar girin.</p>'; return; }
+  
+  if(!window._dovizRates){
+    document.getElementById('dovizResult').innerHTML='<p style="color:var(--muted);margin-top:1rem">⚠️ Kur bilgisi yüklenemedi. İnternet bağlantınızı kontrol edin.</p>';
+    return;
+  }
+  
+  // Convert via USD base
+  const rates = window._dovizRates;
+  let sonuc;
+  if(kaynak === 'USD') {
+    sonuc = miktar * rates[hedef];
+  } else if(hedef === 'USD') {
+    sonuc = miktar / rates[kaynak];
+  } else {
+    const toUSD = miktar / rates[kaynak];
+    sonuc = toUSD * rates[hedef];
+  }
+  
+  const kur = (rates[hedef] / rates[kaynak]).toFixed(4);
+  
+  document.getElementById('dovizResult').innerHTML = `
+    <div class="result-box show" style="margin-top:1.5rem">
+      <div class="result-label">Sonuç</div>
+      <div class="result-value">${sonuc.toLocaleString('tr-TR', {minimumFractionDigits:2,maximumFractionDigits:2})} ${hedef}</div>
+      <div class="result-detail">
+        1 ${kaynak} = ${kur} ${hedef}<br>
+        ${miktar.toLocaleString('tr-TR')} ${kaynak} → ${sonuc.toLocaleString('tr-TR', {minimumFractionDigits:2,maximumFractionDigits:2})} ${hedef}<br>
+        <span style="font-size:0.7rem;opacity:0.6">Canlı kur — exchangerate-api.com</span>
+      </div>
+    </div>`;
+}
+
+function hesaplaDoviz(){
+  const miktar=+document.getElementById('f_dovizMiktar').value;
+  const kaynak=document.getElementById('f_dovizKaynak').value;
+  const hedef=document.getElementById('f_dovizHedef').value;
+  const res=document.getElementById('dovizResult');
+  if(!miktar){res.innerHTML='<p style="color:var(--muted);margin-top:1rem">Lütfen miktar girin.</p>';return;}
+  if(!window._dovizRates){res.innerHTML='<p style="color:var(--muted);margin-top:1rem">⚠️ Kur yüklenemedi. İnternet bağlantınızı kontrol edin.</p>';return;}
+  const rates=window._dovizRates;
+  let sonuc;
+  if(kaynak==='USD') sonuc=miktar*rates[hedef];
+  else if(hedef==='USD') sonuc=miktar/rates[kaynak];
+  else sonuc=(miktar/rates[kaynak])*rates[hedef];
+  const kur=(rates[hedef]/rates[kaynak]).toFixed(4);
+  res.innerHTML=`<div class="result-box show" style="margin-top:1.5rem">
+    <div class="result-label">Sonuç</div>
+    <div class="result-value">${sonuc.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${hedef}</div>
+    <div class="result-detail">1 ${kaynak} = ${kur} ${hedef}<br>${miktar} ${kaynak} → ${sonuc.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${hedef}<br><span style="font-size:0.7rem;opacity:0.6">Kaynak: exchangerate-api.com</span></div>
+  </div>`;
+}
+
+function hesaplaBanka(){
+  const miktar = +document.getElementById('f_bfMiktar').value;
+  const vade = document.getElementById('f_bfVade').value;
+  if(!miktar){ document.getElementById('bankaResult').innerHTML='<p style="color:#888;margin-top:1rem">Lütfen miktar girin.</p>'; return; }
+  document.getElementById('bankaResult').innerHTML = renderBankaKarsilastirma(miktar, vade);
+}
+
+function calculate(id){
+  const tool=tools.find(t=>t.id===id);
+  const f={};
+  let bos=false;
+  tool.fields.forEach(field=>{
+    const el=document.getElementById('f_'+field.id);
+    const val=el?el.value:'';
+    if(field.type==='number' && val==='') bos=true;
+    f[field.id]=val;
+  });
+  if(bos){
+    document.getElementById('resultLabel').textContent='Eksik Bilgi';
+    document.getElementById('resultValue').textContent='—';
+    document.getElementById('resultDetail').textContent='Lütfen tüm alanları doldurun.';
+    document.getElementById('resultBox').classList.add('show');
+    return;
+  }
+  try{
+    const res=tool.calc(f);
+    const isNaN2 = (v) => typeof v==='string' && v.includes('NaN');
+    if(isNaN2(res.value)){throw new Error('NaN');}
+    document.getElementById('resultLabel').textContent=res.label;
+    document.getElementById('resultValue').textContent=res.value;
+    document.getElementById('resultDetail').innerHTML=res.detail.replace(/\n/g,'<br>');
+    document.getElementById('resultBox').classList.add('show');
+  }catch(e){
+    document.getElementById('resultLabel').textContent='Hata';
+    document.getElementById('resultValue').textContent='—';
+    document.getElementById('resultDetail').textContent='Lütfen tüm alanları doğru doldurun.';
+    document.getElementById('resultBox').classList.add('show');
+  }
+}
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+function closeModalBg(e){ if(e.target===document.getElementById('modalBg'))closeModal(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
+
+renderGrid(tools);
+</script>
+</body>
+</html>
